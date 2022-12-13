@@ -1,10 +1,49 @@
 import {Anime} from '../models/anime.js';
 import {Genre} from "../models/genre.js";
 import {Genre_Anime} from "../models/genre_anime.js";
+import { Rating } from '../models/rating.js';
+import { Source_Site } from '../models/source_site.js';
 
 export const getAnime = async (req,res) => {
     try {
-        const response = await Anime.findAll({include: Genre_Anime});
+        const response = await Anime.findAll(
+            {
+                
+                include: [
+                    {
+                        model: Genre_Anime,
+                        attributes: {exclude: ['id_anime','id']},
+                        include:{
+                            model: Genre,
+                            attributes: ['genre_name']
+                        }
+                    },
+                    {
+                        model:Rating,
+                        attributes: {exclude: ['id_anime','id','id_source']},
+                        include:{
+                            model: Source_Site,
+                            attributes: ['source_name']
+                        }
+                    }
+                ]
+            }
+        );
+        // En vez de objetos => array con los géneros
+        //console.log(response);
+        let index = 0;
+        response.forEach(element => {
+            let genres = element.dataValues.genre_animes;
+            let aux = [];
+            genres.forEach(genero =>{
+                aux.push(genero.genre.genre_name);
+            });
+            delete response[index].dataValues.genre_animes;
+            response[index].dataValues.genres = aux;
+            index++;
+            //console.log(element.dataValues.genre_animes[0].genre.genre_name);
+        });
+
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json({"error": error.message});

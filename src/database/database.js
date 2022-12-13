@@ -1,13 +1,15 @@
 import  Sequelize  from "sequelize";
+import dotenv from 'dotenv';
 
-// Inicio de la ORM
+dotenv.config({path:'src/.env'})
+//Inicio de la ORM
 export const sequelize = new Sequelize(
-    'railway',
-    'postgres',
-    '0MWUdl6L7Gt3HUhTVJsm',
+    process.env.DBNAME,
+    process.env.DBUSER,
+    process.env.DBPASSWORD,
     {
-        host: 'containers-us-west-143.railway.app',
-        port: '7461',
-        dialect : 'postgres'
+        host: process.env.DBHOST,
+        port: process.env.DBPORT,
+        dialect : 'postgres' //Hardcode
     }
 );

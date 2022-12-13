@@ -1,7 +1,7 @@
 import {DataTypes} from "sequelize";
 import {sequelize} from "../database/database.js";
 import { Genre_Anime } from "./genre_anime.js";
-
+import { Rating } from "./rating.js";
 export const Anime =  sequelize.define('anime', {
     id: {
       autoIncrement: true,
@@ -17,7 +17,7 @@ export const Anime =  sequelize.define('anime', {
       type: DataTypes.INTEGER,
       allowNull: true
     }
- }, {
+  }, {
     sequelize,
     tableName: 'anime',
     schema: 'public',
@@ -39,6 +39,16 @@ export const Anime =  sequelize.define('anime', {
   });
 
   Genre_Anime.belongsTo(Anime,{
+    foreignKey: 'id_anime',
+    target : 'id'
+  });
+
+  Anime.hasMany(Rating,{
+    foreignKey: 'id_anime',
+    sourceKey : 'id'
+  });
+
+  Rating.belongsTo(Anime,{
     foreignKey: 'id_anime',
     target : 'id'
   });

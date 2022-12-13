@@ -1,6 +1,7 @@
-const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('source_site', {
+import {DataTypes} from "sequelize";
+import {sequelize} from "../database/database.js";
+import { Rating } from "./rating.js";
+export const Source_Site =  sequelize.define('source_site', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -26,4 +27,13 @@ module.exports = function(sequelize, DataTypes) {
       },
     ]
   });
-};
+
+  Source_Site.hasMany(Rating,{
+    foreignKey : "id_source",
+    sourceKey:'id'
+  });
+
+  Rating.belongsTo(Source_Site,{
+    foreignKey : "id_source",
+    target: 'id'
+  })
